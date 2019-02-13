@@ -50,6 +50,7 @@ camera.position.y = 30;
 camera.position.z = 30;
 camera.lookAt(0, 0, 0);
 var scene = new THREE.Scene();
+scene.background = new THREE.Color(0x888888);
 
 var material1 = new THREE.LineBasicMaterial({ color: 0xff0000 });
 var geometry1 = new THREE.Geometry();
@@ -72,6 +73,13 @@ var line3 = new THREE.Line(geometry3, material3);
 scene.add(line1);
 scene.add(line2);
 scene.add(line3);
+
+var material4 = new THREE.LineBasicMaterial({ color: 0xffffff });
+var geometry4 = new THREE.Geometry();
+geometry4.vertices.push(new THREE.Vector3(5, 0, 12));
+geometry4.vertices.push(new THREE.Vector3(5, 30, 12));
+var line4 = new THREE.Line(geometry4, material4);
+scene.add(line4);
 
 boxes.forEach(x => addBox({ box: x, scene }));
 
