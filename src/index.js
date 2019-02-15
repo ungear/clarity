@@ -84,17 +84,21 @@ scene.add(line4);
 boxes.forEach(x => addBox({ box: x, scene }));
 
 renderer.render(scene, camera);
-// var animate = function() {
-//   requestAnimationFrame(animate);
+var angle = 0;
+var radius = 30;
 
-//   cube.rotation.x += 0.01;
-//   cube.rotation.y += 0.01;
-//   cube.rotation.z += 0.01;
+var animate = function () {
+  requestAnimationFrame(animate);
 
-//   renderer.render(scene, camera);
-// };
+  camera.position.x = radius * Math.cos(angle);
+  camera.position.z = radius * Math.sin(angle);
+  camera.lookAt(0, 0, 0);
+  angle += 0.01;
 
-// animate();
+  renderer.render(scene, camera);
+};
+
+animate();
 
 function addBox({ box, scene }) {
   var bodyGeometry = new THREE.BoxGeometry(box.w, box.h, box.d);
