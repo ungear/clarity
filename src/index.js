@@ -3,6 +3,8 @@ import { boxes } from "./objects.js";
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 document.body.appendChild(renderer.domElement);
 
 var camera = new THREE.PerspectiveCamera(
@@ -42,14 +44,28 @@ scene.add(line1);
 scene.add(line2);
 scene.add(line3);
 
-var material4 = new THREE.LineBasicMaterial({ color: 0xffffff });
-var geometry4 = new THREE.Geometry();
-geometry4.vertices.push(new THREE.Vector3(5, 0, 12));
-geometry4.vertices.push(new THREE.Vector3(5, 30, 12));
-var line4 = new THREE.Line(geometry4, material4);
-scene.add(line4);
+var light = new THREE.PointLight(0xffffff, 1, 100);
+var sphere = new THREE.SphereBufferGeometry(0.5, 16, 8);
+light.add(new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffffff })));
+light.position.set(15, 20, 15);
+light.castShadow = true;
+scene.add(light);
+
+var amlight = new THREE.AmbientLight(0x404040); // soft white light
+scene.add(amlight);
 
 boxes.forEach(x => addBox({ box: x, scene }));
+
+var planeGeometry = new THREE.PlaneBufferGeometry(50, 50, 32, 32);
+var planeMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 })
+var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+plane.rotation.x = -Math.PI / 2;
+plane.receiveShadow = true;
+scene.add(plane);
+
+//Create a helper for the shadow camera (optional)
+// var helper = new THREE.CameraHelper(light.shadow.camera);
+// scene.add(helper);
 
 renderer.render(scene, camera);
 var angle = 0;
@@ -70,11 +86,12 @@ animate();
 
 function addBox({ box, scene }) {
   var bodyGeometry = new THREE.BoxGeometry(box.w, box.h, box.d);
-  var bodyMaterial = new THREE.MeshBasicMaterial({ color: box.boxColor });
+  var bodyMaterial = new THREE.MeshStandardMaterial({ color: box.boxColor });
   var body = new THREE.Mesh(bodyGeometry, bodyMaterial);
   body.position.x = box.x;
   body.position.y = box.y;
   body.position.z = box.z;
+  body.castShadow = true;
   scene.add(body);
 
   //var cageGeometry = new THREE.BoxBufferGeometry(box.w, box.h, box.d);
